@@ -9,8 +9,8 @@ from combine import group
 raw = pd.read_csv('data/whl_game_stat.csv')
 whl_stat = group(raw)
 
-
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 server = app.server
 
 app.layout = dbc.Container([
@@ -35,21 +35,34 @@ app.layout = dbc.Container([
                     filter_action="native",
             )
     )])]),
-        dcc.Tab(label = 'Viz', children=[])
+        dcc.Tab(label = 'Viz', children=[
+            dcc.Graph(id = 'scatter_plot',style={'border-width': '0', 'width': '800px', 'height': '700px','margin':'auto'}),
+            'Games Played',
+            dcc.RangeSlider(
+                id='range_slider',
+                min=0, max=70,value = [15,70])
+        ])
     ])
 
 ])
 
 # Set up callbacks/backend
 @app.callback(
-    Output('total_cases', 'srcDoc'),
-    #Input('xcol', 'value'),
+    Output('scatter_plot', 'figure'),
+    Input('range_slider', 'value'),
     #Input('xslider', 'value'),
     #Input('hslider','value')   
 )
+def update_output(slider_range):
+    raw = pd.read_csv('data/whl_game_stat.csv')
+    whl_stat = group(raw)
+    low, high = slider_range
+    mask = (whl_stat['games'] > low) & (whl_stat['games'] < high)
+    fig = px.scatter(whl_stat[mask], x = '5v5_GF%', y = 'EVprimarypoints',
+                     color = 'position_str', hover_data= ['name'], title = '5v5 GF% and Even Strength Primary Points')
+    #fig.update_layout(height = 700, width = 800)
 
-def update_output(xcol,xslider,hslider):
-    return plot_cases(xcol,xslider,hslider)
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
