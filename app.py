@@ -40,7 +40,7 @@ app.layout = dbc.Container([
             'Games Played',
             dcc.RangeSlider(
                 id='range_slider',
-                min=0, max=70,value = [15,70])
+                min=0, max=70,value = [15,80])
         ])
     ])
 
@@ -55,11 +55,17 @@ app.layout = dbc.Container([
 )
 def update_output(slider_range):
     raw = pd.read_csv('data/whl_game_stat.csv')
+    team = raw.groupby('name')['team_name'].max().reset_index()
     whl_stat = group(raw)
+    whl_stat = pd.merge(whl_stat, team, on = 'name')
     low, high = slider_range
     mask = (whl_stat['games'] > low) & (whl_stat['games'] < high)
-    fig = px.scatter(whl_stat[mask], x = '5v5_GF%', y = 'EVprimarypoints',
-                     color = 'position_str', hover_data= ['name'], title = '5v5 GF% and Even Strength Primary Points')
+    whl_stat = whl_stat[mask]
+    fig = px.scatter(whl_stat, x = '5v5_GF%', y = 'EVprimarypoints',
+                     color = 'team_name', hover_data= ['name'], title = '5v5 GF% and Even Strength Primary Points')
+    fig.update_xaxes(range=[0, 100]) 
+    fig.add_hline(y=whl_stat['EVprimarypoints'].mean(), line_color = 'grey')
+    fig.add_vline(x=whl_stat['5v5_GF%'].mean(), line_color = 'grey')   
     #fig.update_layout(height = 700, width = 800)
 
     return fig
