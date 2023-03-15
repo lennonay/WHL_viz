@@ -8,6 +8,7 @@ from combine import group
 
 raw = pd.read_csv('data/whl_game_stat.csv')
 whl_stat = group(raw)
+games_max = whl_stat['games'].max()
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -40,7 +41,7 @@ app.layout = dbc.Container([
             'Games Played',
             dcc.RangeSlider(
                 id='range_slider',
-                min=0, max=70,value = [15,80])
+                min=0, max=games_max,value = [15,games_max-5])
         ])
     ])
 
