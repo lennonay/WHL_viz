@@ -5,10 +5,12 @@ import pandas as pd
 import plotly.graph_objs as go
 import plotly.express as px
 from combine import group
+import numpy as np
 
 raw = pd.read_csv('data/whl_game_stat.csv')
 whl_stat = group(raw)
 games_max = whl_stat['games'].max()
+year_lst = np.sort(whl_stat['birthdate_year'].unique())
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -41,7 +43,11 @@ app.layout = dbc.Container([
             'Games Played',
             dcc.RangeSlider(
                 id='range_slider',
-                min=0, max=games_max,value = [15,games_max-5])
+                min=0, max=games_max,value = [15,games_max-5]),
+            'Birth Year',
+            dcc.Checklist(
+                id = 'birthyear_check', options= year_lst,  value = year_lst, inputStyle={"margin-right": "5px", "margin-left":"20px"}
+            )
         ])
     ])
 
@@ -51,17 +57,21 @@ app.layout = dbc.Container([
 @app.callback(
     Output('scatter_plot', 'figure'),
     Input('range_slider', 'value'),
-    #Input('xslider', 'value'),
+    Input('birthyear_check', 'value'),
     #Input('hslider','value')   
 )
-def update_output(slider_range):
+def update_output(slider_range, birthyear_check):
     raw = pd.read_csv('data/whl_game_stat.csv')
     team = raw.groupby('name')['team_name'].max().reset_index()
     whl_stat = group(raw)
     whl_stat = pd.merge(whl_stat, team, on = 'name')
+    
     low, high = slider_range
-    mask = (whl_stat['games'] > low) & (whl_stat['games'] < high)
+    mask = (whl_stat['games'] >= low) & (whl_stat['games'] <= high)
     whl_stat = whl_stat[mask]
+    
+    whl_stat = whl_stat[whl_stat['birthdate_year'].isin(birthyear_check)]
+    
     fig = px.scatter(whl_stat, x = '5v5_GF%', y = 'EVprimarypoints',
                      color = 'team_name', hover_data= ['name'], title = '5v5 GF% and Even Strength Primary Points')
     fig.update_xaxes(range=[0, 100]) 
