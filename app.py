@@ -39,15 +39,19 @@ app.layout = dbc.Container([
             )
     )])]),
         dcc.Tab(label = 'Viz', children=[
-            dcc.Graph(id = 'scatter_plot',style={'border-width': '0', 'width': '800px', 'height': '700px','margin':'auto'}),
-            'Games Played',
-            dcc.RangeSlider(
-                id='range_slider',
-                min=0, max=games_max,value = [15,games_max-5]),
-            'Birth Year',
+            dbc.Row([dbc.Col([
+                'Games Played',
+                dcc.RangeSlider(
+                    id='range_slider',
+                    min=0, max=games_max,value = [15,games_max-5]),
+                'Birth Year',
             dcc.Checklist(
-                id = 'birthyear_check', options= year_lst,  value = year_lst, inputStyle={"margin-right": "5px", "margin-left":"20px"}
-            )
+                id = 'birthyear_check', options= year_lst,  value = year_lst, inputStyle={"margin-right": "5px", "margin-left":"20px"})
+            ],md=3,style={
+                'background-color': '#e6e6e6',
+                'padding': 15,
+                'border-radius': 3}),
+            dbc.Col(dcc.Graph(id = 'scatter_plot',style={'width': '900px', 'height': '700px'}))])
         ])
     ])
 
