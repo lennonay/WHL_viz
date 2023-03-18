@@ -61,9 +61,8 @@ app.layout = dbc.Container([
     #Input('hslider','value')   
 )
 def update_output(slider_range, birthyear_check):
-    raw = pd.read_csv('data/whl_game_stat.csv')
-    team = raw.groupby('name')['team_name'].max().reset_index()
     whl_stat = group(raw)
+    team = raw.groupby('name')['team_name'].max().reset_index()
     whl_stat = pd.merge(whl_stat, team, on = 'name')
     
     low, high = slider_range
