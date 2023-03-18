@@ -6,26 +6,35 @@ import plotly.graph_objs as go
 import plotly.express as px
 from combine import group
 import numpy as np
+from PIL import Image
+from datetime import datetime
 
 raw = pd.read_csv('data/whl_game_stat.csv')
 whl_stat = group(raw)
 games_max = whl_stat['games'].max()
 year_lst = np.sort(whl_stat['birthdate_year'].unique())
 
+image_path = 'image/Western_Hockey_League.png'
+pil_image = Image.open(image_path)
+
+today = datetime.today().strftime('%Y-%m-%d')
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 server = app.server
 
 app.layout = dbc.Container([
-    html.H1('WHL Player Stat Dashboard',style={
-                    'backgroundColor': 'steelblue',
+    dbc.Col([html.Img(src=pil_image, style ={'width': '100px','display': 'inline-block',},),
+             html.H1(' WHL Player Stat Dashboard', style={'display': 'inline-block','text-align': 'center','font-size': '48px',"margin-left": "20px"}),
+    ],style={
+                    'backgroundColor': 'black',
                     'padding': 20,
                     'color': 'white',
                     'margin-top': 20,
                     'margin-bottom': 20,
                     'text-align': 'center',
-                    'font-size': '48px',
                     'border-radius': 3}),
+    html.H1('Data last updated: 2023-03-14' , style = {'font-size': '15px'}),
     dcc.Tabs([
         dcc.Tab(label = 'Table', children = [
         dbc.Row([
