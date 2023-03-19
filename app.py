@@ -60,7 +60,7 @@ app.layout = dbc.Container([
                 'Games Played',
                 dcc.RangeSlider(
                     id='range_slider',
-                    min=0, max=games_max,value = [15,games_max-5]),
+                    min=0, max=games_max,value = [15,games_max]),
                 'Birth Year',
             dcc.Checklist(
                 id = 'birthyear_check', options= year_lst,  value = year_lst, inputStyle={"margin-right": "5px", "margin-left":"20px"}),
