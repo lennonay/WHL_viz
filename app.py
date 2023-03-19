@@ -12,6 +12,7 @@ from datetime import datetime
 raw = pd.read_csv('data/whl_game_stat.csv')
 whl_stat = group(raw)
 whl_stat = whl_stat.rename(columns= {'birthdate_year':'YOB', 'position_str':'POS','plusminus':'+/-'})
+whl_stat = whl_stat.sort_values('points', ascending=False)
 
 games_max = whl_stat['games'].max()
 name_lst = list(whl_stat['name'].unique())
