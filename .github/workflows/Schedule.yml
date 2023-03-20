@@ -24,7 +24,7 @@ jobs:
         
       - name: execute py script # run the run.py to get the latest data
         run: |
-          python main.py
+          python app.py
           
       - name: Get current date
         id: date
