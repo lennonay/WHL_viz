@@ -1,5 +1,7 @@
 # WHL Player Stat Visualization
 
+[![Schedule](https://github.com/lennonay/WHL_viz/actions/workflows/Schedule.yml/badge.svg)](https://github.com/lennonay/WHL_viz/actions/workflows/Schedule.yml)
+
 Author: Lennon Au-Yeung
 
 This project is created for the UBC Men's Hockey Analytics and Scouting team.
