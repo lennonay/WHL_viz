@@ -9,7 +9,8 @@ import numpy as np
 from PIL import Image
 from datetime import datetime
 
-raw = pd.read_csv('data/whl_game_stat.csv')
+url = 'https://raw.githubusercontent.com/lennonay/WHL_prospect_stat/main/data/whl_game_stat.csv'
+raw = pd.read_csv(url)
 whl_stat = group(raw)
 whl_stat = whl_stat.rename(columns= {'birthdate_year':'YOB', 'position_str':'POS','plusminus':'+/-'})
 whl_stat = whl_stat.sort_values('points', ascending=False)
