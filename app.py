@@ -7,24 +7,33 @@ import plotly.express as px
 from combine import group
 import numpy as np
 from PIL import Image
-from datetime import datetime
+import requests
 
+#read data from github
 url = 'https://raw.githubusercontent.com/lennonay/WHL_prospect_stat/main/data/whl_game_stat.csv'
 raw = pd.read_csv(url)
+
+#data transformation
 whl_stat = group(raw)
 whl_stat = whl_stat.rename(columns= {'birthdate_year':'YOB', 'position_str':'POS','plusminus':'+/-'})
 whl_stat = whl_stat.sort_values('points', ascending=False)
 
+#get values for slider and dropdown
 games_max = whl_stat['games'].max()
 name_lst = list(whl_stat['name'].unique())
 name_lst.insert(0,'All')
 year_lst = np.sort(whl_stat['YOB'].unique())
 pos_lst = np.sort(whl_stat['POS'].unique())
 
+#WHL logo image
 image_path = 'image/Western_Hockey_League.png'
 pil_image = Image.open(image_path)
 
-today = datetime.today().strftime('%Y-%m-%d')
+#Get data last updated date
+url = 'https://raw.githubusercontent.com/lennonay/WHL_prospect_stat/main/data/update.txt'
+response = requests.get(url)
+update_text = response.text
+last_update = update_text[-25:-1]
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -41,7 +50,7 @@ app.layout = dbc.Container([
                     'margin-bottom': 20,
                     'text-align': 'center',
                     'border-radius': 3}),
-    html.H1('Data last updated: 2023-03-14' , style = {'font-size': '15px'}),
+    html.H1('Data ' +  last_update, style = {'font-size': '15px'}),
     dcc.Tabs([
         dcc.Tab(label = 'Table', children = [
         dbc.Row([
