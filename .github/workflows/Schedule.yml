@@ -1,11 +1,8 @@
 name: Schedule
 on:
   schedule:
-<<<<<<< HEAD
     - cron: "0 16 * * *" 
-=======
-    - cron: "30 1 * * *" 
->>>>>>> 8c6488fd845ec04e3b334da4e9c4fb8cc9a5ba24
+
 
 jobs:
   build:
