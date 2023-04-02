@@ -178,8 +178,14 @@ def update_output(name, slider_range, birthyear_check, position,data):
                       hover_name= 'name', title = '5v5 GF% and Primary Points')
     fig.update_yaxes(range = [-5,max_5v5_pp+10])
     fig.update_xaxes(range=[-5, 100])
-    fig.add_hline(y=whl_stat['5v5_PP'].mean(), line_color = 'grey', annotation_text = 'average')
-    fig.add_vline(x=whl_stat['5v5_GF%'].mean(), line_color = 'grey', annotation_text = 'average',annotation_position="top left")
+    if len(whl_stat) == 0:
+        x = 0
+        y = 0
+    else: 
+        x = whl_stat['5v5_GF%'].mean()
+        y = whl_stat['5v5_PP'].mean()
+    fig.add_hline(y = y, line_color = 'grey', annotation_text = 'average')
+    fig.add_vline(x = x, line_color = 'grey', annotation_text = 'average',annotation_position="top left")
     fig.add_vline(x=50, line_color = 'grey',line_dash = 'dash', annotation_text = '50%')
     if name !='All':
 
